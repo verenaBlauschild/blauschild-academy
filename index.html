@@ -193,8 +193,26 @@ Entwurf zur internen Prüfung / Bozza per verifica interna – 18.10.2026</p><h2
    btn.disabled=false;btn.textContent='Absenden / Invia';
    const slot=form.querySelector('#academy-turnstile');slot.hidden=false;
    widgetForm=form;
-   if(window.turnstile){widgetId=window.turnstile.render(slot,{sitekey:cfg.turnstileSiteKey});}
-   else {btn.disabled=true;btn.textContent='Sicherheitsprüfung wird geladen …';}
+   btn.disabled=true;btn.textContent='Sicherheitsprüfung wird geladen …';
+   function initializeTurnstile(){
+     if(!form.isConnected||!window.turnstile)return;
+     try{
+       widgetId=window.turnstile.render(slot,{sitekey:cfg.turnstileSiteKey});
+       btn.disabled=false;btn.textContent='Absenden / Invia';
+     }catch(error){
+       console.error('Academy Turnstile initialization failed:',error);
+       btn.textContent='Sicherheitsprüfung nicht verfügbar / Verifica non disponibile';
+     }
+   }
+   if(window.turnstile){initializeTurnstile();}
+   else {
+     const script=document.createElement('script');
+     script.src='https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+     script.async=true;
+     script.onload=initializeTurnstile;
+     script.onerror=()=>{btn.textContent='Sicherheitsprüfung nicht verfügbar / Verifica non disponibile';console.error('Academy: Cloudflare Turnstile script could not be loaded');};
+     document.head.appendChild(script);
+   }
  }
  const observer=new MutationObserver(()=>{const f=document.getElementById('academy-preview-form');if(f)setup(f)});
  observer.observe(document.getElementById('registration'),{subtree:true,childList:true});
