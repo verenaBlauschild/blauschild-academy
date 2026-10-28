@@ -186,6 +186,9 @@ Entwurf zur internen Prüfung / Bozza per verifica interna – 18.10.2026</p><h2
      const label=document.createElement('label');label.className='check';
      label.innerHTML='<input type="checkbox" data-academy-terms required> Ich akzeptiere die Teilnahmebedingungen / Accetto le condizioni di partecipazione.';
      extra.appendChild(label);
+     const link=document.createElement('p');
+     link.innerHTML='<a href="./teilnahmebedingungen.html" target="_blank" rel="noopener">Teilnahmebedingungen lesen / Leggi le condizioni di partecipazione</a>';
+     extra.appendChild(link);
    }
    const btn=form.querySelector('button[type="submit"]');
    if(!enabled){btn.disabled=true;return;}
