@@ -145,9 +145,14 @@ Entwurf zur internen Prüfung / Bozza per verifica interna – 18.10.2026</p><h2
  const cfg=window.ACADEMY_CONFIG;
  const endpoint=cfg.registrationEndpoint;
  const enabled=cfg.registrationEnabled===true;
+ let requestKey=null;
  let widgetId=null;
  let widgetForm=null;
  function read(form,name){return String(form.elements.namedItem(name)?.value||'').trim();}
+ function getRequestKey(){
+   if(!requestKey)requestKey=crypto.randomUUID();
+   return requestKey;
+ }
  function makePayload(form,course){
    const people=[];
    for(let i=1;i<=5;i++){
@@ -155,7 +160,7 @@ Entwurf zur internen Prüfung / Bozza per verifica interna – 18.10.2026</p><h2
      people.push({firstName:read(form,'person'+i+'First'),lastName:read(form,'person'+i+'Last'),birthDate:read(form,'person'+i+'Dob'),email:read(form,'person'+i+'Email'),phone:read(form,'person'+i+'Phone')});
    }
    const cat={BS:'blauschild',SAG:'sag',NM:'nonmember'}[read(form,'category')];
-   return {courseId:course.id,courseTitle:course.title,category:cat,
+   return {requestKey:getRequestKey(),courseId:course.id,courseTitle:course.title,category:cat,
      company:{name:read(form,'companyName'),address:[read(form,'street'),read(form,'zip'),read(form,'city')].filter(Boolean).join(', '),vatId:read(form,'vat'),taxCode:read(form,'fiscal'),sdi:read(form,'sdi'),pec:read(form,'pec'),email:read(form,'email'),phone:read(form,'phone')},
      participants:people,notes:read(form,'notes'),privacyAcknowledged:!!form.querySelector('input[data-academy-privacy]')?.checked,
      termsAccepted:!!form.querySelector('input[data-academy-terms]')?.checked,
@@ -201,7 +206,10 @@ Entwurf zur internen Prüfung / Bozza per verifica interna – 18.10.2026</p><h2
      try{response=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload),signal:controller.signal});}
      finally{clearTimeout(timeout)}
      if(!response.ok)throw new Error('send_failed');
-     alert('Ihre Kursanfrage wurde gesendet. Die Anmeldung ist noch nicht bestätigt. / Richiesta inviata, iscrizione non ancora confermata.');
+     const result=await response.json();
+     if(result?.ok!==true||result?.saved!==true||result?.status!=='request_saved_not_confirmed'||!result?.requestId)throw new Error('save_not_confirmed');
+     alert('Ihre Kursanfrage wurde gespeichert. Die Anmeldung ist noch nicht bestätigt. / Richiesta salvata, iscrizione non ancora confermata.');
+     requestKey=null;
      document.getElementById('registration').close();
    }catch{alert('Die Anfrage konnte nicht gesendet werden. Bitte versuchen Sie es später erneut. / Invio non riuscito. Riprova più tardi.');}
    finally{btn.disabled=false;btn.textContent=original;if(window.turnstile&&widgetId!==null)window.turnstile.reset(widgetId)}
