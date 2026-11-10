@@ -117,12 +117,19 @@ html{scroll-padding-top:115px}
   <button aria-label="Schließen" class="close">×</button>
   <div id="detail-content"></div>
   <div style="padding:10px 18px 16px;font-size:12px;text-align:left">
-    <a href="#" onclick="return openAcademyCookieSettings(event)">
+   <a href="javascript:void(0)" onclick="return openAcademyCookieSettings(event)">
       Cookie-Einstellungen
     </a>
   </div>
 </dialog>
-<dialog id="registration"><button aria-label="Schließen" class="close">×</button><div id="registration-content"></div><div aria-hidden="true" id="academy-privacy-overlay"><section aria-label="Datenschutz / Informativa privacy" aria-modal="true" id="academy-privacy-panel" role="dialog"><div id="academy-privacy-header"><strong>Datenschutz / Informativa privacy</strong><button aria-label="Schließen / Chiudi" id="academy-privacy-close" type="button">×</button></div><div id="academy-privacy-body" style="padding:0;overflow:hidden;flex:1;min-height:0"><iframe src="datenschutz.html" title="Datenschutz / Informativa privacy" loading="eager" style="display:block;width:100%;height:100%;min-height:55vh;border:0;background:white"></iframe></div></section></div></dialog><script>// Deployment configuration only. Course content and prices belong to MEIN BLAUSCHILD.
+<dialog id="registration"><button aria-label="Schließen" class="close">×</button>
+<div id="registration-content"></div>
+  <div style="padding:12px 26px 24px;font-size:12px">
+  <a href="javascript:void(0)" onclick="return openAcademyCookieSettings(event)">
+    Cookie-Einstellungen
+  </a>
+</div>
+  <div aria-hidden="true" id="academy-privacy-overlay"><section aria-label="Datenschutz / Informativa privacy" aria-modal="true" id="academy-privacy-panel" role="dialog"><div id="academy-privacy-header"><strong>Datenschutz / Informativa privacy</strong><button aria-label="Schließen / Chiudi" id="academy-privacy-close" type="button">×</button></div><div id="academy-privacy-body" style="padding:0;overflow:hidden;flex:1;min-height:0"><iframe src="datenschutz.html" title="Datenschutz / Informativa privacy" loading="eager" style="display:block;width:100%;height:100%;min-height:55vh;border:0;background:white"></iframe></div></section></div></dialog><script>// Deployment configuration only. Course content and prices belong to MEIN BLAUSCHILD.
 window.ACADEMY_CONFIG = Object.freeze({mode:'demo',apiBaseUrl:'',portalUrl:'',requestTimeoutMs:15000,registrationEndpoint:'https://zwuckwyiwaeylsvpzeuh.supabase.co/functions/v1/academy-registration',turnstileSiteKey:'0x4AAAAAAFZkgPyVj7b61PJ5',registrationEnabled:true,supabasePublishableKey:'sb_publishable_iFZxw3EPKfMOgfeMe4EicA_xudxiy1a'});
 </script><script type="module">const config=window.ACADEMY_CONFIG;const $=s=>document.querySelector(s);const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));const money=n=>new Intl.NumberFormat('de-DE',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(n);let courses=[],policies=null,selected=null,key=null;
 function safeUrl(value){try{const u=new URL(value,location.href);return ['https:','http:','file:'].includes(u.protocol)?u.href:null}catch{return null}}
@@ -391,12 +398,6 @@ function openAcademyCookieSettings(event) {
 
   if (!window.Cookiebot || typeof window.Cookiebot.renew !== "function") {
     return false;
-  }
-
-  const dialog = document.querySelector("dialog[open]");
-
-  if (dialog) {
-    dialog.close();
   }
 
   window.Cookiebot.renew();
