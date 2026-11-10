@@ -199,10 +199,27 @@ const registration=function(){
  quote();
  f.addEventListener('input',saveDraft);
  f.addEventListener('change',saveDraft);
- $('#academy-back').onclick=()=>{saveDraft();$('#registration').close();document.querySelector('#angebot')?.scrollIntoView({behavior:'smooth'});};
+ $('#academy-back').onclick=()=>{
+  window.__academyRegistrationDraft=null;
+  $('#registration').close();
+  document.querySelector('#angebot')?.scrollIntoView({behavior:'smooth'});
+};
 $('#registration').showModal();
 };
-for(const dialog of document.querySelectorAll('dialog'))dialog.querySelector('.close').onclick=()=>dialog.close();$('#portal').onclick=()=>alert('Die öffentliche Kursanmeldung ist für alle drei Teilnehmergruppen möglich. / Le iscrizioni sono disponibili qui per tutte le categorie.');for(const id of ['search','category','format','course-language','sort'])$('#'+id).addEventListener('input',render);
+for (const dialog of document.querySelectorAll('dialog')) {
+  dialog.querySelector('.close').onclick = () => {
+    if (dialog.id === 'registration') {
+      window.__academyRegistrationDraft = null;
+    }
+    dialog.close();
+  };
+}
+  const academyRegistrationDialog = document.querySelector('#registration');
+
+academyRegistrationDialog.addEventListener('cancel', () => {
+  window.__academyRegistrationDraft = null;
+});
+  $('#portal').onclick=()=>alert('Die öffentliche Kursanmeldung ist für alle drei Teilnehmergruppen möglich. / Le iscrizioni sono disponibili qui per tutte le categorie.');for(const id of ['search','category','format','course-language','sort'])$('#'+id).addEventListener('input',render);
 async function init(){try{function parseAcademyCsv(text){const rows=[];let row=[],cell='',quoted=false;const t=text.replace(/^\uFEFF/,'');for(let i=0;i<t.length;i++){const ch=t[i];if(quoted){if(ch==='"'&&t[i+1]==='"'){cell+='"';i++}else if(ch==='"')quoted=false;else cell+=ch}else if(ch==='"'){if(cell!=='')throw Error('CSV: Anführungszeichen an falscher Stelle');quoted=true}else if(ch===';'){row.push(cell);cell=''}else if(ch==='\n'||ch==='\r'){if(ch==='\r'&&t[i+1]==='\n')i++;row.push(cell);if(row.some(v=>v.trim()))rows.push(row);row=[];cell=''}else cell+=ch}if(quoted)throw Error('CSV: nicht geschlossenes Anführungszeichen');if(cell!==''||row.length){row.push(cell);if(row.some(v=>v.trim()))rows.push(row)}if(rows.length<2)throw Error('CSV: keine Kurse gefunden');const header=rows.shift();if(new Set(header).size!==header.length)throw Error('CSV: doppelte Spalten');const required=['id','title','startDate','courseLanguage','publicVisible','publicRegistration','price_blauschild','price_sag','price_nonmember'];if(required.some(k=>!header.includes(k)))throw Error('CSV: Pflichtspalten fehlen');const yes=(v)=>{const x=String(v).trim().toLowerCase();if(['si','sì','ja','yes','true','1'].includes(x))return true;if(['no','nein','false','0'].includes(x))return false;throw Error('CSV: Sichtbarkeit/Anmeldung muss SI oder NO sein')};const num=(v)=>{if(v==='')return null;const n=Number(v);if(!Number.isFinite(n)||n<0)throw Error('CSV: ungültiger Zahlenwert');return n};const ids=new Set();return {schemaVersion:1,courses:rows.map((cells,idx)=>{if(cells.length!==header.length)throw Error('CSV: Spaltenzahl in Zeile '+(idx+2));const c=Object.fromEntries(header.map((k,n)=>[k,cells[n].trim()]));if(!c.id||!c.title||!/^[a-zA-Z0-9_-]+$/.test(c.id)||ids.has(c.id))throw Error('CSV: ungültige oder doppelte Kurs-ID in Zeile '+(idx+2));ids.add(c.id);if(!/^\d{4}-\d{2}-\d{2}$/.test(c.startDate))throw Error('CSV: Datum muss JJJJ-MM-TT sein');if(!['de','it','de_it'].includes(c.courseLanguage))throw Error('CSV: Kurssprache muss de, it oder de_it sein');const prices={BS:num(c.price_blauschild),SAG:num(c.price_sag),NM:num(c.price_nonmember)};if(Object.values(prices).some(v=>v===null))throw Error('CSV: alle drei Preise sind Pflicht');return {...c,prices,price:prices.BS,publicVisible:yes(c.publicVisible),publicRegistration:yes(c.publicRegistration),availablePlaces:num(c.availablePlaces),capacity:num(c.capacity)}})}}
 async function loadAcademySupabase(){
   const apiKey=config.supabasePublishableKey;
@@ -337,6 +354,7 @@ const data=await loadAcademySupabase();if(data.schemaVersion!==1||!Array.isArray
      if(result?.ok!==true||result?.saved!==true||result?.status!=='request_saved_not_confirmed'||!result?.requestId)throw new Error('save_not_confirmed');
      alert('Ihre Kursanfrage wurde gespeichert. Die Anmeldung ist noch nicht bestätigt. / Richiesta salvata, iscrizione non ancora confermata.');
      requestKey=null;
+     window.__academyRegistrationDraft=null;
      document.getElementById('registration').close();
    }catch{alert('Die Anfrage konnte nicht gesendet werden. Bitte versuchen Sie es später erneut. / Invio non riuscito. Riprova più tardi.');}
    finally{btn.disabled=false;btn.textContent=original;if(window.turnstile&&widgetId!==null)window.turnstile.reset(widgetId)}
