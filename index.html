@@ -93,6 +93,17 @@ html{scroll-padding-top:115px}
 .card-bottom{display:flex!important;flex-wrap:wrap!important;justify-content:flex-start!important;gap:10px!important;align-items:center!important}
 .card-bottom a.button{display:inline-flex!important;align-items:center;justify-content:center;white-space:normal;text-align:center}
 @media(max-width:600px){#detail-content{padding:75px 18px 70px}.card-bottom a.button,.card-bottom button{width:100%}}
+/* Scheda corso compatta e centrata */
+#detail {
+  position: fixed !important;
+  inset: 0 !important;
+  margin: auto !important;
+  width: min(680px, calc(100% - 24px)) !important;
+  height: auto !important;
+  max-height: 90dvh !important;
+  border-radius: 12px !important;
+  overflow-y: auto !important;
+}
 </style><style id="academy-filter-layout-fix">
 /* Five compact filters on one row on desktop, with responsive wrapping. */
 .filters{grid-template-columns:minmax(170px,1.35fr) repeat(4,minmax(130px,1fr));gap:12px}
