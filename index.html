@@ -344,5 +344,24 @@ apply();
 window.__academySiteLanguage=()=>lang;
 })();
 </script>
-</script></body></html>
+</script>
+<script>
+function openAcademyCookieSettings(event) {
+  if (event) event.preventDefault();
+
+  if (!window.Cookiebot || typeof window.Cookiebot.renew !== "function") {
+    return false;
+  }
+
+  const dialog = document.querySelector("dialog[open]");
+
+  if (dialog) {
+    dialog.close();
+  }
+
+  window.Cookiebot.renew();
+  return false;
+}
+</script>
+</body></html>
 
