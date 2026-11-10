@@ -400,9 +400,28 @@ function openAcademyCookieSettings(event) {
     return false;
   }
 
+  const dialog = document.querySelector("dialog[open]");
+
+  if (dialog) {
+    window.academyCookieReturnDialog = dialog;
+    dialog.close();
+    dialog.show();
+  }
+
   window.Cookiebot.renew();
   return false;
 }
+  function academyRestoreCookieDialog() {
+  const dialog = window.academyCookieReturnDialog;
+
+  if (dialog && dialog.open) {
+    dialog.close();
+    dialog.showModal();
+  }
+  window.academyCookieReturnDialog = null;
+}
+window.addEventListener("CookiebotOnAccept", academyRestoreCookieDialog);
+window.addEventListener("CookiebotOnDecline", academyRestoreCookieDialog);
 </script>
 </body></html>
 
