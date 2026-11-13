@@ -117,15 +117,70 @@ html{scroll-padding-top:115px}
 @media(max-width:1100px){.filters{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:680px){.filters{grid-template-columns:repeat(2,minmax(0,1fr));padding:15px;gap:12px}}
 @media(max-width:440px){.filters{grid-template-columns:minmax(0,1fr)}}
-</style>
+@media(max-width:440px){.filters{grid-template-columns:minmax(0,1fr)}}
+/* Academy header navigation */
+header .academy-header-nav {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 28px;
+}
+
+header .academy-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+
+header .academy-nav-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+@media (max-width: 900px) {
+  header .academy-header-nav {
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+
+  header .academy-nav-links {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 600px) {
+  header .academy-header-nav {
+    align-items: flex-end;
+  }
+
+  header .academy-nav-links {
+    flex-direction: column;
+    align-items: flex-end;
+  }
+}
+  </style>
   </head>
   <body>
     <header><a class="brand" href="https://www.blauschild.it/" aria-label="Zur Blauschild Startseite">
           <img alt="Blauschild Academy" src="Academy.png" width="432"/></a> 
-      <nav><a href="#angebot">Kursangebot</a><a href="mailto:info@blauschild.it" aria-label="Kontakt via E-Mail">✉ Kontakt via E-Mail</a><button class="outline" id="portal">MEIN BLAUSCHILD ↗</button>
-        <div class="academy-lang-switch" role="group" aria-label="Website-Sprache / Lingua del sito"><button type="button" data-site-lang="de" aria-pressed="true">DE</button><span aria-hidden="true">|</span><button type="button" data-site-lang="it" aria-pressed="false">IT</button>
-        </div>
-      </nav>
+<nav class="academy-header-nav">
+  <div class="academy-nav-links">
+    <a href="#angebot">Kursangebot</a>
+    <a href="mailto:info@blauschild.it" aria-label="Kontakt via E-Mail">✉ Kontakt via E-Mail</a>
+  </div>
+  <div class="academy-nav-right">
+    <button class="outline" id="portal">MEIN BLAUSCHILD ↗</button>
+
+    <div class="academy-lang-switch" role="group" aria-label="Website-Sprache / Lingua del sito">
+      <button type="button" data-site-lang="de" aria-pressed="true">DE</button>
+      <span aria-hidden="true">|</span>
+      <button type="button" data-site-lang="it" aria-pressed="false">IT</button>
+    </div>
+  </div>
+</nav>
     </header>
     <main>
       <section class="hero">
